@@ -1,5 +1,6 @@
-import { runPreStartupConfig, setupCoreMiddlewares } from 'config';
+import { runPreStartupConfig, setupCoreMiddlewares } from './config';
 import express from 'express';
+import errorMiddleware from 'middlewares/errorHandler';
 
 runPreStartupConfig();
 const app = express();
@@ -10,3 +11,6 @@ app.get('/', (request, response) => {
 });
 
 app.listen(5000);
+
+
+app.use(errorMiddleware);
