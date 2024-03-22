@@ -5,7 +5,7 @@ class URLStore {
   private store: Record<string, URLEntry> = {};
 
   // get URL by id and increment stats
-  getUrl(id: string) {
+  getURL(id: string) {
     const urlEntry = this.store[id];
     if (!urlEntry) {
       throw new Error('URL not found');
