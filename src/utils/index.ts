@@ -10,3 +10,10 @@ export const customIdGenerator = init({
   // prevent collisions when generating ids in a distributed system.
   fingerprint: 'kBmNf/OoF92d1UgKglhVsg==',
 });
+
+
+export const getURLLastPath = (url: URL) => {
+  const pathname = url.pathname;
+  const paths = pathname.split("/");
+  return paths.pop()
+}
