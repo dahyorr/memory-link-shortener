@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { urlStore } from 'lib/URLStore';
 import { HttpException } from 'lib/errors';
+import { URLStats } from 'typings';
 import { getURLLastPath } from 'utils';
 import { urlInputSchema, } from 'validations';
 import { z } from 'zod';
@@ -18,7 +19,7 @@ export const encodeUrlHandler = async (req: Request, res: Response) => {
   });
 }
 
-export const decodeUrlHandler = async (req: Request, res: Response) => {
+export const decodeUrlHandler = async (req: Request, res: Response, next: NextFunction) => {
   const { url } = req.body as z.infer<typeof urlInputSchema>;
   const id = getURLLastPath(new URL(url));
   let urlObj: URL;
@@ -28,7 +29,7 @@ export const decodeUrlHandler = async (req: Request, res: Response) => {
   }
   catch (err) {
     if (err instanceof Error) {
-      throw new HttpException(400, err.message)
+      return next(new HttpException(400, err.message))
     }
   }
 
@@ -40,3 +41,22 @@ export const decodeUrlHandler = async (req: Request, res: Response) => {
   });
 }
 
+export const linkStatisticHandler = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+  let stats: URLStats;
+
+  try {
+    stats = urlStore.getStats(id);
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      return next(new HttpException(400, err.message))
+    }
+  }
+  return res.json({
+    status: 'success',
+    data: {
+      ...stats,
+    },
+  });
+}

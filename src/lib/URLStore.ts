@@ -15,13 +15,13 @@ class URLStore {
   }
 
   // decode id without incrementing stats
-  decodeId(id: string) {
-    const urlEntry = this.store[id];
-    if (!urlEntry) {
-      throw new Error('URL not found');
-    }
-    return urlEntry.url;
-  }
+  // decodeId(id: string) {
+  //   const urlEntry = this.store[id];
+  //   if (!urlEntry) {
+  //     throw new Error('URL not found');
+  //   }
+  //   return urlEntry.url;
+  // }
 
   saveURL(url: URL) {
     const id = customIdGenerator();
