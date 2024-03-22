@@ -6,6 +6,21 @@ import { getURLLastPath } from 'utils';
 import { urlInputSchema, } from 'validations';
 import { z } from 'zod';
 
+
+export const defaultRedirectHandler = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+  let urlObj: URL;
+  try {
+    urlObj = urlStore.getURL(id);
+  }
+  catch (err) {
+    if (err instanceof Error) {
+      return next(new HttpException(404, err.message))
+    }
+  }
+  res.redirect(urlObj.toString())
+}
+
 export const encodeUrlHandler = async (req: Request, res: Response) => {
   const { url } = req.body as z.infer<typeof urlInputSchema>;
   const urlObj = new URL(url);
@@ -50,7 +65,7 @@ export const linkStatisticHandler = async (req: Request, res: Response, next: Ne
   }
   catch (err) {
     if (err instanceof Error) {
-      return next(new HttpException(400, err.message))
+      return next(new HttpException(404, err.message))
     }
   }
   return res.json({
