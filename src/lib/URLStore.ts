@@ -1,7 +1,6 @@
 import { URLEntry } from "typings";
 import { customIdGenerator } from "utils";
 
-
 class URLStore {
   private store: Record<string, URLEntry> = {};
 
@@ -34,6 +33,8 @@ class URLStore {
         hits: 0,
       },
     };
+    this.store[id] = urlEntry;
+    return id;
   }
 
   getStats(id: string) {
@@ -44,5 +45,6 @@ class URLStore {
     return urlEntry.stats;
   }
 }
-
 export default URLStore
+
+export const urlStore = new URLStore();
