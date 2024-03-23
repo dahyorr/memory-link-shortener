@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import express, { Express } from 'express';
 import morgan from 'morgan';
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV !== 'production';
 
 export const runPreStartupConfig = () => {
   dotenv.config();
