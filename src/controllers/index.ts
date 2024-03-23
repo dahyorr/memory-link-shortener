@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { urlStore } from 'lib/URLStore';
-import { HttpException } from 'lib/errors';
+import { BadRequestException, HttpException, NotFoundException } from 'lib/errors';
 import { URLStats } from 'typings';
 import { getURLLastPath } from 'utils';
 import { urlInputSchema, } from 'validations';
@@ -15,7 +15,7 @@ export const defaultRedirectHandler = async (req: Request, res: Response, next: 
   }
   catch (err) {
     if (err instanceof Error) {
-      return next(new HttpException(404, err.message))
+      return next(new NotFoundException(err.message))
     }
   }
   res.redirect(urlObj.toString())
@@ -44,7 +44,7 @@ export const decodeUrlHandler = async (req: Request, res: Response, next: NextFu
   }
   catch (err) {
     if (err instanceof Error) {
-      return next(new HttpException(400, err.message))
+      return next(new BadRequestException(err.message))
     }
   }
 
@@ -65,7 +65,7 @@ export const linkStatisticHandler = async (req: Request, res: Response, next: Ne
   }
   catch (err) {
     if (err instanceof Error) {
-      return next(new HttpException(404, err.message))
+      return next(new NotFoundException(err.message))
     }
   }
   return res.json({
