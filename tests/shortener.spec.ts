@@ -1,9 +1,11 @@
 import assert from "node:assert";
 import { beforeEach, describe, it } from "mocha";
-import request from "supertest";
+import supertest from "supertest";
 import app from "../src/app";
 import { urlStore } from "../src/lib/URLStore";
 import { isCuid } from "@paralleldrive/cuid2";
+
+const request = supertest(app);
 
 describe("POST /encode", () => {
   const inputUrl = new URL("https://www.test.com");
@@ -13,26 +15,26 @@ describe("POST /encode", () => {
   })
 
   it("Should return 400 error when invalid url or request body is provided", async () => {
-    await request(app)
+    await request
       .post("/encode")
       .send({ url: "invalid-url" }) // invalid url
       .expect('Content-Type', /json/)
       .expect(400);
 
-    await request(app)
+    await request
       .post("/encode")
       .send({ url: "" }) // empty url
       .expect('Content-Type', /json/)
       .expect(400);
 
-    await request(app)
+    await request
       .post("/encode") // empty body
       .expect('Content-Type', /json/)
       .expect(400);
   });
 
   it("Should return shortURL when a valid url is provided", async () => {
-    await request(app)
+    await request
       .post("/encode")
       .send({ url: inputUrl })
       .expect('Content-Type', /json/)
@@ -52,7 +54,7 @@ describe("POST /encode", () => {
   });
 
   it("Should return valid shortURl", async () => {
-    const response = await request(app)
+    const response = await request
       .post("/encode")
       .send({ url: inputUrl })
       .expect('Content-Type', /json/)
@@ -78,19 +80,19 @@ describe("POST /decode", () => {
   })
 
   it("Should return 400 error when invalid url or request body is provided", async () => {
-    await request(app)
+    await request
       .post("/decode")
       .send({ url: "invalid-url" }) //  invalid url
       .expect('Content-Type', /json/)
       .expect(400);
 
-    await request(app)
+    await request
       .post("/decode")
       .send({ url: "" }) // empty url
       .expect('Content-Type', /json/)
       .expect(400);
 
-    await request(app)
+    await request
       .post("/decode")  // empty body
       .expect('Content-Type', /json/)
       .expect(400);
@@ -98,11 +100,11 @@ describe("POST /decode", () => {
 
   it("Should return inputUrl when a valid shortURL is provided", async () => {
     const id = urlStore.saveURL(inputUrl)
-    const tempRequest = request(app).get("/")
+    const tempRequest = request.get("/")
     const { url } = tempRequest
-    tempRequest.abort() // abort the request
+    tempRequest.end(() => { }) // abort the request
 
-    await request(app)
+    await request
       .post("/decode")
       .send({ url: new URL(id, url).toString() })
       .expect('Content-Type', /json/)
@@ -122,7 +124,7 @@ describe("GET /statistic/:id", () => {
 
   it("Should return 404 when invalid id is provided", async () => {
     const randomId = "random-id";
-    await request(app)
+    await request
       .get(`/statistic/${randomId}`)
       .expect('Content-Type', /json/)
       .expect(404);
@@ -133,7 +135,7 @@ describe("GET /statistic/:id", () => {
     urlStore.getURL(id) // just to increment hits
     urlStore.getURL(id)
     urlStore.getURL(id)
-    await request(app)
+    await request
       .get(`/statistic/${id}`)
       .expect('Content-Type', /json/)
       .expect(200)
@@ -152,7 +154,7 @@ describe("GET /:id", () => {
 
   it("Should return 404 when invalid id is provided", async () => {
     const randomId = "random-id";
-    await request(app)
+    await request
       .get(`/${randomId}`)
       .expect('Content-Type', /json/)
       .expect(404);
@@ -161,7 +163,7 @@ describe("GET /:id", () => {
   it("Should redirect to input url if id is valid", async () => {
     const id = urlStore.saveURL(inputUrl)
     urlStore.getURL(id)
-    await request(app)
+    await request
       .get(`/${id}`)
       .expect(302)
       .expect('Location', inputUrl.toString())
