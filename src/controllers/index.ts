@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { urlStore } from 'lib/URLStore';
-import { BadRequestException, HttpException, NotFoundException } from 'lib/errors';
+import { BadRequestException, NotFoundException } from 'lib/errors';
 import { URLStats } from 'typings';
 import { getURLLastPath } from 'utils';
 import { urlInputSchema, } from 'validations';

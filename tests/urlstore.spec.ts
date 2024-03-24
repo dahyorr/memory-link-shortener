@@ -12,14 +12,12 @@ describe("Test URLStore", () => {
   })
 
   it("Should store url provided and return an cuid", () => {
-    // test implementation
     const testURL = new URL("https://www.test.com");
     const id = urlStore.saveURL(testURL);
     assert.equal(isCuid(id), true);
   });
 
   it("Should store and return url when provided id", () => {
-    // test implementation
     const testURL = new URL("https://www.test.com");
     const id = urlStore.saveURL(testURL);
 
