@@ -1,7 +1,7 @@
 import assert from "node:assert";
-import { beforeEach, describe, it } from "node:test";
+import { beforeEach, describe, it } from "mocha";
 import request from "supertest";
-import app from "../src/main";
+import app from "../src/app";
 import { urlStore } from "../src/lib/URLStore";
 import { isCuid } from "@paralleldrive/cuid2";
 
@@ -31,7 +31,7 @@ describe("POST /encode", () => {
       .expect(400);
   });
 
-  it("Should return shortURL when a valid url is provided", async (done) => {
+  it("Should return shortURL when a valid url is provided", async () => {
     await request(app)
       .post("/encode")
       .send({ url: inputUrl })
@@ -96,9 +96,11 @@ describe("POST /decode", () => {
       .expect(400);
   });
 
-  it("Should return inputUrl when a valid shortURL is provided", async (done) => {
+  it("Should return inputUrl when a valid shortURL is provided", async () => {
     const id = urlStore.saveURL(inputUrl)
-    const { url } = request(app).get("/")
+    const tempRequest = request(app).get("/")
+    const { url } = tempRequest
+    tempRequest.abort() // abort the request
 
     await request(app)
       .post("/decode")
@@ -107,7 +109,7 @@ describe("POST /decode", () => {
       .expect(200)
       .expect((res) => {
         assert.equal(inputUrl.toString(), res.body.data.url); //
-      },)
+      })
   });
 })
 
@@ -126,7 +128,7 @@ describe("GET /statistic/:id", () => {
       .expect(404);
   });
 
-  it("Should return accurate stats object when a valid id is provided", async (done) => {
+  it("Should return accurate stats object when a valid id is provided", async () => {
     const id = urlStore.saveURL(inputUrl)
     urlStore.getURL(id) // just to increment hits
     urlStore.getURL(id)
@@ -156,7 +158,7 @@ describe("GET /:id", () => {
       .expect(404);
   });
 
-  it("Should redirect to input url if id is valid", async (done) => {
+  it("Should redirect to input url if id is valid", async () => {
     const id = urlStore.saveURL(inputUrl)
     urlStore.getURL(id)
     await request(app)
