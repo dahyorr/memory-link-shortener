@@ -4,14 +4,9 @@ This is a simple in-memory link shortener. It allows you to shorten URLs and sto
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine.
+These instructions will help you get the project up and running on your local machine.
 
 ### Prerequisites
-
-What things you need to install the software and how to install them:
-
-- Node.js
-- npm
 
 ### How to run
 Instructions on how to run the project locally aree available [here](how-to-run.md).
