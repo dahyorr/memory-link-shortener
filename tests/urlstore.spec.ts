@@ -1,6 +1,6 @@
 import { isCuid } from "@paralleldrive/cuid2";
 import assert from "node:assert";
-import URLStore from "../src/lib/URLStore";
+import URLStore from "../src/models/URLStore";
 import { beforeEach, describe, it } from "mocha";
 
 let urlStore: URLStore;

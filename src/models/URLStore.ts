@@ -10,6 +10,7 @@ class URLStore {
     if (!urlEntry) {
       throw new Error('URL not found');
     }
+    
     urlEntry.stats.hits++;
     return urlEntry.url;
   }

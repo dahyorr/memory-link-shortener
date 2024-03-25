@@ -8,3 +8,10 @@ export interface URLEntry {
 export interface URLStats {
   hits: number;
 }
+
+export interface URLVisit{
+  timestamp: string;
+  userAgent: string;
+  ip: string;
+  urlId: string
+}

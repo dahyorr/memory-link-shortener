@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { urlStore } from 'lib/URLStore';
+import { urlStore } from 'models/URLStore';
 import { BadRequestException, NotFoundException } from 'lib/errors';
+import { urlVisits } from 'models/URLVisits';
 import { URLStats } from 'typings';
 import { getURLLastPath } from 'utils';
 import { urlInputSchema, } from 'validations';
@@ -18,6 +19,7 @@ export const defaultRedirectHandler = async (req: Request, res: Response, next: 
       return next(new NotFoundException(err.message))
     }
   }
+  urlVisits.logVisit(id, req)
   res.redirect(urlObj.toString())
 }
 
@@ -47,7 +49,7 @@ export const decodeUrlHandler = async (req: Request, res: Response, next: NextFu
       return next(new BadRequestException(err.message))
     }
   }
-
+  urlVisits.logVisit(id, req)
   return res.json({
     status: 'success',
     data: {
@@ -72,6 +74,7 @@ export const linkStatisticHandler = async (req: Request, res: Response, next: Ne
     status: 'success',
     data: {
       ...stats,
+      visits: urlVisits.getVisitsByURLId(id),
     },
   });
 }

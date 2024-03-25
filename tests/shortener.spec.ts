@@ -2,8 +2,9 @@ import assert from "node:assert";
 import { beforeEach, describe, it } from "mocha";
 import supertest from "supertest";
 import app from "../src/app";
-import { urlStore } from "../src/lib/URLStore";
+import { urlStore } from "../src/models/URLStore";
 import { isCuid } from "@paralleldrive/cuid2";
+import { urlVisits } from "../src/models/URLVisits";
 
 const request = supertest(app);
 
@@ -12,6 +13,7 @@ describe("POST /encode", () => {
 
   beforeEach(() => {
     urlStore.reset()
+    urlVisits.reset()
   })
 
   it("Should return 400 error when invalid url or request body is provided", async () => {
@@ -140,7 +142,12 @@ describe("GET /statistic/:id", () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .expect((res) => {
-        assert.deepEqual(res.body.data, urlStore.getStats(id)); //
+        const stats = {
+          ...urlStore.getStats(id),
+          visits: urlVisits.getVisitsByURLId(id)
+        };
+        assert.deepEqual(res.body.data, stats); //
+
       },)
   });
 })
