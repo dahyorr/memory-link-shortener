@@ -21,7 +21,6 @@ describe("Test URLStore", () => {
     } as unknown as Request
     urlVisits.logVisit(randomId, fakeRequest);
     const visits = urlVisits.getVisitsByURLId(randomId)
-    console.log(visits, fakeRequest)
 
     assert.equal(visits.length, 1);
     assert.equal(visits[0].urlId, randomId);
